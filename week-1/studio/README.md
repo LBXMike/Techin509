@@ -11,9 +11,6 @@ python scripts/check_env.py
 ```
 
 No API key or extra packages are needed for this check or the Arena. If blocked, record the error and work with a partner.
-
-## 2. Complete the AI Coding Agent Arena
-
 1. Open the [Arena task and code](arena/README.md). Work in pairs or a small team; choose a human lead, agent operator, and reviewer. In a pair, the lead also reviews.
 2. Run the starting checks and save the results.
 3. Use your one of the workflows below. If you prefer a different workflow, articulate it and use it. However, after your role rotation within team, you should pick a different workflow.
@@ -36,7 +33,7 @@ Explain your user, problem, smallest useful version, safe document sources, and 
 
 1. Explain your scope and answer classmates' questions without AI.
 2. Complete your [Agent Engineering Log](templates/AGENT_ENGINEERING_LOG.md) in `docs/AGENT_ENGINEERING_LOG.md`.
-3. Follow the [Git checklist](GIT_CHECKLIST.md). Commit and push your code and documents.
+3. Follow the [Git checklist](GIT_CHECopeKLIST.md). Commit and push your code and documents.
 5. Record `shipped: <repository URL>` or `blocked: <specific blocker>` in your engineering log.
 
 ## Before you leave

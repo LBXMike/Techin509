@@ -6,11 +6,19 @@ from pathlib import Path
 class Library:
     def __init__(self, path):
         self.path = Path(path)
+        self.documents = json.loads(self.path.read_text(encoding="utf-8"))
 
     def search(self, query, limit=3):
-        documents = json.loads(self.path.read_text(encoding="utf-8"))
-        matches = [doc for doc in documents if query in doc["text"]]
-        return matches[:limit + 1]
+        trimmed = query.strip()
+        if not trimmed or limit <= 0:
+            return []
+
+        q_lower = trimmed.lower()
+        matches = [
+            doc for doc in self.documents
+            if q_lower in doc["text"].lower()
+        ]
+        return matches[:limit]
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-# Build Your Bot Circle
+ # Build Your Bot Circle
 
 1. **Share your idea.** Tell a partner who your user is, what information they need, and which safe documents could help.
 2. **Challenge the fit.** Would document retrieval help, or would a database query, form, or dashboard be more useful?
