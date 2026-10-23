@@ -1,8 +1,8 @@
 # Week 1 — Arena record
 
-Name/team:  Mike Clopton & Kate 
-Workflows before and after rotation:  Vibe 
-Roles before / after rotation: 
+Name/team:  
+Workflows before and after rotation:  
+Roles before / after rotation:
 
 ## Task and checks
 
