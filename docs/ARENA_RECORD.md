@@ -1,6 +1,6 @@
 # Week 1 — Arena record
 
-Name/team: Mike Clopton & Kate
+Name/team: Mike & Kate
 Workflows before and after rotation: Vibe the whole time. We did not rotate or switch workflows, because the agent finished the original task and the additional requirement in one run without stopping in between.
 Roles before / after rotation: No rotation. Mike and Kate both used the Vibe workflow, and no one took the reviewer role: Kate did not verify Mike's work.
 
