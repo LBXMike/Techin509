@@ -16,7 +16,7 @@ A chatbot that can handle the information from 3 fictitious receipts, each with 
 
 ## Data requirements & constraints
 
-The data will be uploaded to a private server for the first version of the chatbot as a proof of concept. After this version is proven effective, more data will continuously be added to continue testing. The data will be synthetic to start; then, when distributed to users, it can be sanitized or left on the user's local drive to access. What should never enter the repository is credit card information or other PII. To confirm this, the uploaded data will be verified by a human designer.
+The first version of the chatbot is a proof of concept that uses 3 synthetic receipts stored in the repository at data/receipts/receipts.json. After this version is proven effective, more synthetic receipts will be added to continue testing. When distributed to users, real receipts will stay on the user's local drive and will not be added to the repository. What should never enter the repository is credit card information or other PII. To confirm this, the uploaded data will be verified by a human designer.
 
 ## Success measure
 

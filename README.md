@@ -1,26 +1,7 @@
-# `rag-starter` — the HMSTI 509 personal-assistant spine
+# ReceiptBot — HMSTI 509 project repository
 
-This is the **one repository you grow all term**. In Week 1 it already runs a working assistant shell.
-Every week after, you replace a piece of "borrowed magic" with code you understand, until by
-**Demo Day (Week 9)** it is a Retrieval-Augmented Generation (RAG) personal assistant that answers
-**grounded, cited** questions over a safe work-library corpus and can be demoed locally or, when
-the data is synthetic/sanitized, at a public URL. In Week 10 you harden it into a take-away
-professional assistant package: safe data posture, local-first roadmap, and a small markdown
-assistant-memory file.
-
-It is designed to run **with or without** an API key:
-
-- **With a key** (instructor-provided or your own): real LLM + real embeddings.
-- **Offline / no key**: a deterministic `FakeLLM` and a pure-Python `fallback_embed()` so class
-  demos, exercises, and tests still work on any laptop, including locked-down corporate machines.
-
-The offline path is a teaching safety net, not a truly intelligent local model. The architecture is
-deliberately provider-swappable: in Week 10 you actually point the `chat()` boundary at a **local
-Ollama model** and re-run your tests — see "Run it against a local model" below.
-
-> **Golden rule:** never commit secrets or real customer/PII data. See [`SECURITY.md`](SECURITY.md).
-
----
+> **Grading Project 1?** Everything is in the [Project 1 section](#project-1-receiptbot-my-assistant) just below.
+> The rest of this README is the course's `rag-starter` documentation that this project is built on.
 
 ## Project 1: ReceiptBot (my assistant)
 
@@ -58,6 +39,30 @@ bot > Unknown command '/bogus'. Type /help to see the commands.
 you > /exit
 bot > Goodbye! Your conversation was not saved.
 ```
+
+---
+
+## About the course starter (`rag-starter`)
+
+This is the **one repository you grow all term**. In Week 1 it already runs a working assistant shell.
+Every week after, you replace a piece of "borrowed magic" with code you understand, until by
+**Demo Day (Week 9)** it is a Retrieval-Augmented Generation (RAG) personal assistant that answers
+**grounded, cited** questions over a safe work-library corpus and can be demoed locally or, when
+the data is synthetic/sanitized, at a public URL. In Week 10 you harden it into a take-away
+professional assistant package: safe data posture, local-first roadmap, and a small markdown
+assistant-memory file.
+
+It is designed to run **with or without** an API key:
+
+- **With a key** (instructor-provided or your own): real LLM + real embeddings.
+- **Offline / no key**: a deterministic `FakeLLM` and a pure-Python `fallback_embed()` so class
+  demos, exercises, and tests still work on any laptop, including locked-down corporate machines.
+
+The offline path is a teaching safety net, not a truly intelligent local model. The architecture is
+deliberately provider-swappable: in Week 10 you actually point the `chat()` boundary at a **local
+Ollama model** and re-run your tests — see "Run it against a local model" below.
+
+> **Golden rule:** never commit secrets or real customer/PII data. See [`SECURITY.md`](SECURITY.md).
 
 ---
 
