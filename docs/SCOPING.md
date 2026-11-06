@@ -30,4 +30,4 @@ Successfully identifying purchasing information for 10 of the 15 total items lis
 
 ## Peer review and revision
 
-Pending — peer review not yet completed.
+Not required for this assignment (the instructor waived peer review).

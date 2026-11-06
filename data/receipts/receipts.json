@@ -1,0 +1,53 @@
+{
+  "_note": "SYNTHETIC test data for Project 1. These purchases are made up. No real card numbers, names, or addresses.",
+  "receipts": [
+    {
+      "id": "R1",
+      "store": "Walmart",
+      "date": "2026-10-01",
+      "items": [
+        {"name": "Milk, whole, 1 gallon", "price": 3.49},
+        {"name": "Bread, wheat loaf", "price": 2.79},
+        {"name": "Eggs, large, 1 dozen", "price": 4.29},
+        {"name": "Bananas, 3 lb", "price": 1.86},
+        {"name": "Paper towels, 6 rolls", "price": 6.97}
+      ],
+      "subtotal": 19.40,
+      "tax": 0.71,
+      "total": 20.11,
+      "payment": "card (number not recorded)"
+    },
+    {
+      "id": "R2",
+      "store": "Target",
+      "date": "2026-10-08",
+      "items": [
+        {"name": "Shampoo, 12 oz", "price": 7.99},
+        {"name": "Toothpaste", "price": 3.59},
+        {"name": "Laundry detergent, 64 oz", "price": 12.99},
+        {"name": "Spiral notebook", "price": 2.49},
+        {"name": "Apples, gala, 3 lb", "price": 4.47}
+      ],
+      "subtotal": 31.53,
+      "tax": 2.77,
+      "total": 34.30,
+      "payment": "card (number not recorded)"
+    },
+    {
+      "id": "R3",
+      "store": "Safeway",
+      "date": "2026-10-15",
+      "items": [
+        {"name": "Chicken breast, 2 lb", "price": 8.76},
+        {"name": "Rice, white, 5 lb", "price": 4.99},
+        {"name": "Milk, 2%, half gallon", "price": 2.29},
+        {"name": "Coffee, ground, 12 oz", "price": 9.99},
+        {"name": "Dish soap", "price": 3.49}
+      ],
+      "subtotal": 29.52,
+      "tax": 0.36,
+      "total": 29.88,
+      "payment": "cash"
+    }
+  ]
+}

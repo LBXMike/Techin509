@@ -16,11 +16,13 @@ from __future__ import annotations
 
 from .chatbot import ChatBot
 from .receipt_profile import build_profile_prompt
+from .receipts import format_receipts, load_receipts, receipts_summary
 
 MAX_INPUT_CHARS = 500
 
 COMMANDS = {
     "/help": "show this list of commands",
+    "/receipts": "list the receipts ReceiptBot can see",
     "/history": "print the conversation history the model sees",
     "/reset": "clear the history and start a new conversation",
     "/exit": "quit ReceiptBot",
@@ -34,9 +36,14 @@ TOO_LONG_MSG = (
 UNKNOWN_COMMAND_MSG = "Unknown command '{cmd}'. Type /help to see the commands."
 
 
+def system_prompt() -> str:
+    """The ReceiptBot profile plus the synthetic receipts it answers from."""
+    return build_profile_prompt(receipts_text=format_receipts(load_receipts()))
+
+
 def new_bot() -> ChatBot:
-    """Create a ChatBot that uses the ReceiptBot profile."""
-    return ChatBot(system_prompt=build_profile_prompt())
+    """Create a ChatBot that uses the ReceiptBot profile and receipts."""
+    return ChatBot(system_prompt=system_prompt())
 
 
 def help_text() -> str:
@@ -77,6 +84,8 @@ def handle_input(bot: ChatBot, raw: str) -> tuple[str, bool]:
             return "Goodbye! Your conversation was not saved.", False
         if cmd == "/help":
             return help_text(), True
+        if cmd == "/receipts":
+            return "Receipts on file:\n" + receipts_summary(load_receipts()), True
         if cmd == "/history":
             return history_text(bot), True
         if cmd == "/reset":

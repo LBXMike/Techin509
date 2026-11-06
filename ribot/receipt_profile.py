@@ -43,9 +43,14 @@ def _bullets(items: list[str]) -> str:
     return "\n".join(f"- {item}" for item in items)
 
 
-def build_profile_prompt(profile: dict[str, object] = RECEIPT_PROFILE) -> str:
-    """Assemble the profile into one system prompt string."""
-    return f"""You are {profile["role"]}.
+def build_profile_prompt(
+    profile: dict[str, object] = RECEIPT_PROFILE, receipts_text: str = ""
+) -> str:
+    """Assemble the profile into one system prompt string.
+
+    If receipts_text is given, it is added at the end as the only data the bot may use.
+    """
+    prompt = f"""You are {profile["role"]}.
 Tone: speak in a {profile["tone"]} tone.
 
 Operating rules:
@@ -56,7 +61,12 @@ Answer requirements:
 
 Boundaries:
 {_bullets(profile["boundaries"])}""".strip()
+    if receipts_text:
+        prompt += f"\n\nReceipts (the only data you may use):\n{receipts_text}"
+    return prompt
 
 
 if __name__ == "__main__":  # `python -m ribot.receipt_profile`
-    print(build_profile_prompt())
+    from .receipts import format_receipts, load_receipts
+
+    print(build_profile_prompt(receipts_text=format_receipts(load_receipts())))

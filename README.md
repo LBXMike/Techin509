@@ -36,12 +36,15 @@ python -m pytest tests/test_receipt_bot.py     # run the Project 1 tests
 | Requirement | Where it lives |
 |---|---|
 | Use case: user, problem, tasks, data, privacy, deliverables, success criteria | [`docs/SCOPING.md`](docs/SCOPING.md) |
+| Synthetic data: 3 receipts, 15 items, no card numbers or personal data | [`data/receipts/receipts.json`](data/receipts/receipts.json), loaded by [`ribot/receipts.py`](ribot/receipts.py) into the system prompt |
 | Assistant profile: role, tone, operating rules, answer requirements, boundaries | [`ribot/receipt_profile.py`](ribot/receipt_profile.py) |
 | Conversation history (every turn is kept and sent back to the model) | `bot.history` via `ChatBot.reply()` in [`ribot/chatbot.py`](ribot/chatbot.py); viewable with `/history` |
 | Command loop: input, update history, respond, `/exit` | `main()` and `handle_input()` in [`ribot/receipt_bot.py`](ribot/receipt_bot.py) |
 | Invalid input handling | Empty/whitespace input, input over 500 characters, and unknown `/commands` each get a clear message and are not added to history |
 
-Commands: `/help`, `/history`, `/reset`, `/exit`.
+Commands: `/help`, `/receipts`, `/history`, `/reset`, `/exit`.
+
+Offline mode gives placeholder answers. Add an API key to `.env` for real answers from the receipts.
 
 Example session (offline mode):
 

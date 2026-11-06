@@ -8,8 +8,39 @@ from ribot.receipt_bot import (
     MAX_INPUT_CHARS,
     handle_input,
     new_bot,
+    system_prompt,
 )
 from ribot.receipt_profile import RECEIPT_PROFILE, build_profile_prompt
+from ribot.receipts import load_receipts
+
+
+# --- Synthetic receipt data --------------------------------------------------
+
+def test_three_receipts_with_fifteen_items():
+    receipts = load_receipts()
+    assert len(receipts) == 3
+    assert sum(len(r["items"]) for r in receipts) == 15
+    assert all(len(r["items"]) <= 5 for r in receipts)
+
+
+def test_receipt_math_adds_up():
+    for r in load_receipts():
+        assert round(sum(i["price"] for i in r["items"]), 2) == r["subtotal"], r["id"]
+        assert round(r["subtotal"] + r["tax"], 2) == r["total"], r["id"]
+
+
+def test_system_prompt_contains_every_item():
+    prompt = system_prompt()
+    for r in load_receipts():
+        for item in r["items"]:
+            assert item["name"] in prompt
+
+
+def test_receipts_command_lists_each_receipt():
+    text, keep_running = handle_input(new_bot(), "/receipts")
+    assert keep_running
+    for store in ("Walmart", "Target", "Safeway"):
+        assert store in text
 
 
 # --- Assistant profile -------------------------------------------------------
@@ -28,7 +59,8 @@ def test_profile_prompt_includes_each_section():
 
 def test_bot_uses_receipt_profile_as_system_prompt():
     bot = new_bot()
-    assert bot.history[0] == {"role": "system", "content": build_profile_prompt()}
+    assert bot.history[0] == {"role": "system", "content": system_prompt()}
+    assert bot.history[0]["content"].startswith(build_profile_prompt())
 
 
 # --- Conversation history ----------------------------------------------------
@@ -70,7 +102,7 @@ def test_exit_is_case_insensitive():
 def test_help_lists_every_command():
     text, keep_running = handle_input(new_bot(), "/help")
     assert keep_running
-    for cmd in ("/help", "/history", "/reset", "/exit"):
+    for cmd in ("/help", "/receipts", "/history", "/reset", "/exit"):
         assert cmd in text
 
 
@@ -87,7 +119,7 @@ def test_reset_clears_everything_but_the_profile():
     bot = new_bot()
     handle_input(bot, "What did I buy at Walmart?")
     handle_input(bot, "/reset")
-    assert bot.history == [{"role": "system", "content": build_profile_prompt()}]
+    assert bot.history == [{"role": "system", "content": system_prompt()}]
 
 
 def test_commands_are_not_added_to_history():
