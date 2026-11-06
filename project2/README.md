@@ -12,7 +12,7 @@ python -m project2.receipt_bot          # chat with ReceiptBot (now with /save a
 python -m pytest project2/tests         # run the Project 2 tests (68 tests)
 ```
 
-**Study guide:** [STUDY_GUIDE.md](STUDY_GUIDE.md) explains every function in Projects 1 and 2 and
+**Study guide:** [STUDY_GUIDE.md](../STUDY_GUIDE.md) (in the main folder) explains every function in Projects 1 and 2 and
 each Python technique they use, tagged by where it appears in the course.
 
 ## Where each requirement is

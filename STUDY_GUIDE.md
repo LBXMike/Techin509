@@ -1,6 +1,10 @@
-# ReceiptBot study guide: functions and techniques (Projects 1 & 2)
+# TECHIN 509 study guide: functions and techniques
 
-A refresher on every function in ReceiptBot and the Python techniques behind them.
+A running refresher for the course, added to as each project is completed.
+It covers every function in my ReceiptBot projects and the Python techniques behind them.
+
+**Covered so far:** Project 1 (ReceiptBot), Project 2 (refactor, save/load, error handling).
+
 Each technique is tagged with where it comes from in this course:
 
 - **[Lesson Wk N]**: taught in that week's lesson or optional reading
@@ -57,7 +61,7 @@ The whole list is sent to the model on every turn. That is the only reason the b
 
 ## 2. Project 1 functions
 
-### [`ribot/receipt_profile.py`](../ribot/receipt_profile.py): the assistant's personality
+### [`ribot/receipt_profile.py`](ribot/receipt_profile.py): the assistant's personality
 
 | Function | Input | Output | What it does |
 |---|---|---|---|
@@ -66,7 +70,7 @@ The whole list is sent to the model on every turn. That is the only reason the b
 
 `RECEIPT_PROFILE` is plain data (a dict of strings and lists), so each part can be changed or tested on its own.
 
-### [`ribot/receipts.py`](../ribot/receipts.py): Project 1 receipt loading
+### [`ribot/receipts.py`](ribot/receipts.py): Project 1 receipt loading
 
 | Function | Input | Output | What it does |
 |---|---|---|---|
@@ -75,7 +79,7 @@ The whole list is sent to the model on every turn. That is the only reason the b
 | `format_receipts(receipts)` | list of receipts | string | Calls `format_receipt` on each, joined by blank lines. |
 | `receipts_summary(receipts)` | list of receipts | string | One short line per receipt, for `/receipts`. |
 
-### [`ribot/receipt_bot.py`](../ribot/receipt_bot.py): Project 1 command loop
+### [`ribot/receipt_bot.py`](ribot/receipt_bot.py): Project 1 command loop
 
 | Function | Input | Output | What it does |
 |---|---|---|---|
@@ -86,7 +90,7 @@ The whole list is sent to the model on every turn. That is the only reason the b
 | `handle_input(bot, raw)` | bot, raw text | `(text, keep_running)` tuple | Checks empty/too-long, runs commands with `if`/`elif`, otherwise asks the bot. |
 | `main()` | nothing | nothing | The `while True` loop: `input()`, `handle_input()`, `print()`, stop on `/exit` or Ctrl+C. |
 
-### [`ribot/chatbot.py`](../ribot/chatbot.py): course starter, used by both projects
+### [`ribot/chatbot.py`](ribot/chatbot.py): course starter, used by both projects
 
 | Method | What it does |
 |---|---|
@@ -99,7 +103,7 @@ The whole list is sent to the model on every turn. That is the only reason the b
 
 ## 3. Project 2 functions
 
-### [`project2/receipts.py`](receipts.py): loading with validation
+### [`project2/receipts.py`](project2/receipts.py): loading with validation
 
 | Function | Input | Output | Raises | What it does |
 |---|---|---|---|---|
@@ -108,7 +112,7 @@ The whole list is sent to the model on every turn. That is the only reason the b
 | `load_receipts(path)` | file path | validated list | `ReceiptDataError` | Opens the file, turns "file not found" and "bad JSON" into clear messages, then validates. |
 | `format_receipt`, `format_receipts`, `receipts_summary` | (same as Project 1) | | — | Unchanged formatting helpers. |
 
-### [`project2/conversation_store.py`](conversation_store.py): save and load
+### [`project2/conversation_store.py`](project2/conversation_store.py): save and load
 
 | Function | Input | Output | Raises | What it does |
 |---|---|---|---|---|
@@ -118,7 +122,7 @@ The whole list is sent to the model on every turn. That is the only reason the b
 | `save_conversation(history, path)` | history, path | the path | `OSError` | Writes `{"format_version": 1, "saved_at": ..., "messages": [...]}`. Creates the folder if needed. |
 | `load_conversation(path)` | path | list of turns | `ConversationFileError` | Reads the file; rejects missing files, bad JSON, wrong version, bad messages. |
 
-### [`project2/receipt_bot.py`](receipt_bot.py): the refactored loop
+### [`project2/receipt_bot.py`](project2/receipt_bot.py): the refactored loop
 
 **Building a session**
 
