@@ -22,6 +22,42 @@ Ollama model** and re-run your tests — see "Run it against a local model" belo
 
 ---
 
+## Project 1: ReceiptBot (my assistant)
+
+ReceiptBot helps one household look up purchases (store, date, items, prices) on saved receipts.
+It works offline with no API key.
+
+```text
+python -m ribot.receipt_bot                    # chat with ReceiptBot
+python -m ribot.receipt_profile                # print the full assistant profile
+python -m pytest tests/test_receipt_bot.py     # run the Project 1 tests
+```
+
+| Requirement | Where it lives |
+|---|---|
+| Use case: user, problem, tasks, data, privacy, deliverables, success criteria | [`docs/SCOPING.md`](docs/SCOPING.md) |
+| Assistant profile: role, tone, operating rules, answer requirements, boundaries | [`ribot/receipt_profile.py`](ribot/receipt_profile.py) |
+| Conversation history (every turn is kept and sent back to the model) | `bot.history` via `ChatBot.reply()` in [`ribot/chatbot.py`](ribot/chatbot.py); viewable with `/history` |
+| Command loop: input, update history, respond, `/exit` | `main()` and `handle_input()` in [`ribot/receipt_bot.py`](ribot/receipt_bot.py) |
+| Invalid input handling | Empty/whitespace input, input over 500 characters, and unknown `/commands` each get a clear message and are not added to history |
+
+Commands: `/help`, `/history`, `/reset`, `/exit`.
+
+Example session (offline mode):
+
+```text
+you > How much did the milk cost?
+bot > (offline demo reply) Speaking as ReceiptBot, ...
+you >
+bot > Please type a question about your receipts (or /help for commands).
+you > /bogus
+bot > Unknown command '/bogus'. Type /help to see the commands.
+you > /exit
+bot > Goodbye! Your conversation was not saved.
+```
+
+---
+
 ## Quick start (5 minutes)
 
 > **Anything below fail?** Go straight to [`SETUP_TROUBLESHOOTING.md`](SETUP_TROUBLESHOOTING.md) —
