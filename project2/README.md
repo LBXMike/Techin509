@@ -112,3 +112,21 @@ Git because saved conversations could contain personal questions.
   because it belongs to the course starter.
 - **Offline mode doesn't really read receipts.** Without an API key, the stand-in model gives
   placeholder answers (it only demonstrates memory with "my name is ..."). Real answers need a key in `.env`.
+
+## 5. Week 7 studio: steering check (issue #1)
+
+*Added by Florence (studio developer).* Before a question reaches the model, `handle_input()` now checks
+whether it is about the receipts. Off-topic questions get a steering message built from the receipts data
+(the store names and two example questions), and are not sent to the model or saved to history. Questions
+that mention a card get a fixed reply, "I don't store card information for safety reasons.", for the same
+reasons.
+
+A question counts as on topic if it contains a store name, a receipt date, an item's noun (the part of the
+item name before the first comma, so "eggs" but not "large"), or a general receipt word such as "total" or
+"spend". Two more cases pass: questions with "my name" (so the memory demo keeps working), and follow-ups
+such as "How much was that?" when the question just before was on topic and the new one contains a cue word
+(that, it, this, those, these, them, one). New tests: `tests/test_p2_steering.py`.
+
+**Limitation:** matching is by exact words, so "egg" doesn't match "Eggs" and "October 8" doesn't match
+2026-10-08. A cue word can also let an unrelated question through right after a receipt question, and
+follow-ups only look back one question.

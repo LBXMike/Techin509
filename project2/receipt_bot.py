@@ -19,6 +19,7 @@ turns to JSON and /load puts them back behind a fresh system message.
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable, NamedTuple
@@ -62,6 +63,9 @@ class Session:
     bot: ChatBot
     receipts: list[dict]
     conversations_dir: Path = field(default=CONVERSATIONS_DIR)
+    # Steering: was the previous question on topic? Lets a follow-up like
+    # "How much was that?" through. Blocked questions set it to False.
+    last_was_receipt: bool = False
 
 
 class InvalidInputError(ValueError):
@@ -133,6 +137,7 @@ def cmd_history(session: Session, arg: str) -> Reply:
 
 def cmd_reset(session: Session, arg: str) -> Reply:
     session.bot.reset()
+    session.last_was_receipt = False  # nothing to follow up on after a reset
     return Reply("History cleared. Starting a new conversation.")
 
 
@@ -181,6 +186,92 @@ COMMANDS: dict[str, Command] = {
 }
 
 
+# --- Steering: keep questions about the receipts (Week 7 studio, issue #1) -------
+
+# General receipt words from the issue, plus their common forms.
+GENERAL_RECEIPT_WORDS = frozenset({
+    "total", "totals", "subtotal", "price", "prices", "cost", "costs", "spend", "spent",
+    "buy", "bought", "receipt", "receipts", "tax", "paid", "purchase", "purchases",
+})
+
+# Words that refer back to the previous question ("How much was that?").
+FOLLOW_UP_CUES = frozenset({"that", "it", "this", "those", "these", "them", "one"})
+
+CARD_WORDS = frozenset({"card", "cards"})
+CARD_INFO_MSG = "I don't store card information for safety reasons."
+
+
+def _words(text: str) -> set[str]:
+    """Lowercased whole words. Dates like 2026-10-01 stay one word."""
+    return set(re.findall(r"[a-z0-9]+(?:[-'][a-z0-9]+)*", text.lower()))
+
+
+def _item_noun(item: dict) -> str:
+    """The distinctive part of an item name: 'Eggs, large, 1 dozen' -> 'Eggs'."""
+    return item["name"].split(",")[0].strip()
+
+
+def receipt_keywords(receipts: list[dict]) -> set[str]:
+    """Words that mark a question as receipt-related, built from the receipts data.
+
+    Store names, dates, and each item's noun (the part before the first comma), plus
+    GENERAL_RECEIPT_WORDS. Descriptors after the comma ('white', 'large') are left out,
+    so they can't make an unrelated question look on topic.
+    """
+    keywords = set(GENERAL_RECEIPT_WORDS)
+    for receipt in receipts:
+        keywords |= _words(receipt["store"])
+        keywords.add(receipt["date"])
+        for item in receipt["items"]:
+            keywords |= _words(_item_noun(item))
+    return keywords
+
+
+def is_receipt_question(text: str, receipts: list[dict]) -> bool:
+    """True if the question shares a whole word with receipt_keywords(receipts)."""
+    return bool(_words(text) & receipt_keywords(receipts))
+
+
+def is_follow_up(text: str) -> bool:
+    """True if the question contains a cue word that refers back (FOLLOW_UP_CUES).
+
+    Used only when the previous question was on topic, so "How much was that?" after
+    a milk question reaches the model, but "Tell me a joke" does not. It looks back one
+    question only; looking further back is a future enhancement.
+    """
+    return bool(_words(text) & FOLLOW_UP_CUES)
+
+
+def mentions_own_name(text: str) -> bool:
+    """True for 'My name is ...' and 'What's my name?', which count as on topic."""
+    return "my name" in " ".join(text.lower().split())
+
+
+def is_card_question(text: str) -> bool:
+    """True if the question mentions a card; it gets CARD_INFO_MSG, not the model."""
+    return bool(_words(text) & CARD_WORDS)
+
+
+def is_on_topic(session: Session, text: str) -> bool:
+    """Should this question go to the model? See the checks above."""
+    if is_receipt_question(text, session.receipts) or mentions_own_name(text):
+        return True
+    return session.last_was_receipt and is_follow_up(text)
+
+
+def steering_message(receipts: list[dict]) -> str:
+    """Explain the bot's scope, with stores and example questions taken from the data."""
+    stores = [r["store"] for r in receipts]
+    store_list = stores[0] if len(stores) == 1 else ", ".join(stores[:-1]) + " and " + stores[-1]
+    first, second = receipts[0], receipts[1 % len(receipts)]
+    item = _item_noun(first["items"][0]).lower()
+    return (
+        f"I can only help with your saved receipts from {store_list}. Try asking: "
+        f'"How much was the {item} at {first["store"]}?" or '
+        f'"What was my total at {second["store"]} on {second["date"]}?"'
+    )
+
+
 # --- Routing ---------------------------------------------------------------------
 
 def ask(session: Session, question: str) -> Reply:
@@ -202,6 +293,14 @@ def handle_input(session: Session, raw: str) -> Reply:
             return Reply(UNKNOWN_COMMAND_MSG.format(cmd=name))
         return command.handler(session, arg)
 
+    # Steering: card questions and off-topic questions never reach the model and
+    # are never added to history.
+    if is_card_question(text):
+        return Reply(CARD_INFO_MSG)
+    on_topic = is_on_topic(session, text)
+    session.last_was_receipt = on_topic
+    if not on_topic:
+        return Reply(steering_message(session.receipts))
     return ask(session, text)
 
 
