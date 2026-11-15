@@ -130,3 +130,8 @@ such as "How much was that?" when the question just before was on topic and the 
 **Limitation:** matching is by exact words, so "egg" doesn't match "Eggs" and "October 8" doesn't match
 2026-10-08. A cue word can also let an unrelated question through right after a receipt question, and
 follow-ups only look back one question.
+
+**Follow-up fixes (Mike):** "pay", "item", "store" and "shop" (and their forms) now count as receipt words,
+so questions like "How much did I pay?" reach the model. A card question about *how* a receipt was paid
+("Did I pay with a card at Walmart?") now reaches the model, because the receipts record the payment method.
+Questions asking for card details (number, PIN, CVV, expiration) still get the fixed card reply.

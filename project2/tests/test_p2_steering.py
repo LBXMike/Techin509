@@ -34,3 +34,25 @@ def test_off_topic_question_gets_steering_message_and_is_not_saved(session):
     )
     assert reply.keep_running
     assert len(session.bot.history) == 1  # only the system message
+
+
+@pytest.mark.parametrize("question", [
+    "How much did I pay?",
+    "What's the cheapest item?",
+    "Which store did I shop at?",
+])
+def test_general_receipt_words_reach_the_model(session, question):
+    handle_input(session, question)
+    assert session.bot.history[-2] == {"role": "user", "content": question}
+
+
+def test_payment_method_question_reaches_the_model(session):
+    question = "Did I pay with a card at Walmart?"
+    handle_input(session, question)
+    assert session.bot.history[-2] == {"role": "user", "content": question}
+
+
+def test_card_number_question_is_still_blocked(session):
+    reply = handle_input(session, "What card number did I pay with?")
+    assert reply.text == "I don't store card information for safety reasons."
+    assert len(session.bot.history) == 1
