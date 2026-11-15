@@ -192,6 +192,8 @@ COMMANDS: dict[str, Command] = {
 GENERAL_RECEIPT_WORDS = frozenset({
     "total", "totals", "subtotal", "price", "prices", "cost", "costs", "spend", "spent",
     "buy", "bought", "receipt", "receipts", "tax", "paid", "purchase", "purchases",
+    # Added after review: real receipt questions that were being blocked.
+    "pay", "item", "items", "store", "stores", "shop", "shopped",
 })
 
 # Words that refer back to the previous question ("How much was that?").
@@ -247,9 +249,24 @@ def mentions_own_name(text: str) -> bool:
     return "my name" in " ".join(text.lower().split())
 
 
+PAYMENT_WORDS = frozenset({"pay", "paid", "payment"})
+CARD_DETAIL_WORDS = frozenset({"number", "numbers", "pin", "cvv", "expiration", "expiry"})
+
+
+def is_payment_method_question(text: str) -> bool:
+    """True for 'Did I pay with a card at Walmart?': asks HOW a receipt was paid.
+
+    The receipts record the payment method ("card" or "cash") but never card details,
+    so this is a fair receipt question. Anything asking for card details (number, PIN,
+    ...) is still treated as a card question.
+    """
+    words = _words(text)
+    return bool(words & PAYMENT_WORDS) and not (words & CARD_DETAIL_WORDS)
+
+
 def is_card_question(text: str) -> bool:
-    """True if the question mentions a card; it gets CARD_INFO_MSG, not the model."""
-    return bool(_words(text) & CARD_WORDS)
+    """True if the question asks about card details; it gets CARD_INFO_MSG, not the model."""
+    return bool(_words(text) & CARD_WORDS) and not is_payment_method_question(text)
 
 
 def is_on_topic(session: Session, text: str) -> bool:
